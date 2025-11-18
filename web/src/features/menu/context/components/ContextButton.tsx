@@ -21,58 +21,74 @@ const useStyles = createStyles((theme, params: { disabled?: boolean; readOnly?: 
   },
   label: {
     width: '100%',
-    color: params.disabled ? theme.colors.dark[3] : theme.colors.dark[0],
+    color: params.disabled ? 'rgba(150, 150, 150, 0.6)' : 'rgba(220, 220, 220, 0.95)',
     whiteSpace: 'pre-wrap',
+    fontSize: '12.5px',
   },
   button: {
     height: 'fit-content',
     width: '100%',
-    padding: 10,
+    padding: '10px 8px',
+    backgroundColor: params.disabled 
+      ? 'rgba(50, 50, 50, 0.4)' 
+      : 'rgba(55, 55, 55, 0.75)',
+    backdropFilter: 'blur(2px)',
+    border: 'none',
+    borderRadius: '2px',
     '&:hover': {
-      backgroundColor: params.readOnly ? theme.colors.dark[6] : undefined,
+      backgroundColor: params.readOnly 
+        ? 'rgba(55, 55, 55, 0.75)' 
+        : 'rgba(65, 65, 65, 0.85)',
       cursor: params.readOnly ? 'unset' : 'pointer',
     },
     '&:active': {
-      transform: params.readOnly ? 'unset' : undefined,
+      transform: params.readOnly ? 'unset' : 'scale(0.98)',
     },
   },
   iconImage: {
-    maxWidth: '25px',
+    maxWidth: '22px',
+    filter: params.disabled ? 'grayscale(100%) opacity(0.5)' : 'none',
   },
   description: {
-    color: params.disabled ? theme.colors.dark[3] : theme.colors.dark[2],
-    fontSize: 12,
+    color: params.disabled ? 'rgba(130, 130, 130, 0.5)' : 'rgba(160, 160, 160, 0.85)',
+    fontSize: '10.5px',
+    lineHeight: '1.4',
   },
   dropdown: {
     padding: 10,
-    color: theme.colors.dark[0],
-    fontSize: 14,
+    color: 'rgba(220, 220, 220, 0.95)',
+    fontSize: 12,
     maxWidth: 256,
     width: 'fit-content',
     border: 'none',
+    backgroundColor: 'rgba(40, 40, 40, 0.95)',
+    backdropFilter: 'blur(8px)',
   },
   buttonStack: {
-    gap: 4,
+    gap: 2,
     flex: '1',
   },
   buttonGroup: {
-    gap: 4,
+    gap: 7,
     flexWrap: 'nowrap',
   },
   buttonIconContainer: {
-    width: 25,
-    height: 25,
+    width: 22,
+    height: 22,
     justifyContent: 'center',
     alignItems: 'center',
   },
   buttonTitleText: {
     overflowWrap: 'break-word',
+    fontSize: '12.5px',
+    fontWeight: 400,
   },
   buttonArrowContainer: {
     justifyContent: 'center',
     alignItems: 'center',
-    width: 25,
-    height: 25,
+    width: 20,
+    height: 20,
+    color: 'rgba(180, 180, 180, 0.7)',
   },
 }));
 

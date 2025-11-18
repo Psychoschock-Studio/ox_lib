@@ -11,19 +11,26 @@ interface Props {
 
 const useStyles = createStyles((theme, params: { canClose?: boolean }) => ({
   button: {
-    borderRadius: 4,
-    flex: '1 15%',
-    alignSelf: 'stretch',
+    borderRadius: '2px',
+    minWidth: 'auto',
+    width: 'auto',
     height: 'auto',
     textAlign: 'center',
     justifyContent: 'center',
-    padding: 2,
+    padding: '3px 5px',
+    backgroundColor: 'transparent',
+    border: 'none',
+    '&:hover': {
+      backgroundColor: params.canClose === false ? 'transparent' : 'rgba(255, 255, 255, 0.1)',
+    },
   },
   root: {
     border: 'none',
+    minWidth: 'auto',
+    minHeight: 'auto',
   },
   label: {
-    color: params.canClose === false ? theme.colors.dark[2] : theme.colors.dark[0],
+    color: params.canClose === false ? 'rgba(140, 140, 140, 0.5)' : 'rgba(200, 60, 60, 0.95)',
   },
 }));
 
