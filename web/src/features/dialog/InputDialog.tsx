@@ -45,7 +45,7 @@ const InputDialog: React.FC = () => {
         index,
         {
           value:
-            row.type !== 'checkbox'
+            (row.type !== 'checkbox'
               ? row.type === 'date' || row.type === 'date-range' || row.type === 'time'
                 ? // Set date to current one if default is set to true
                   row.default === true
@@ -54,8 +54,8 @@ const InputDialog: React.FC = () => {
                   ? row.default.map((date) => new Date(date).getTime())
                   : row.default && new Date(row.default).getTime()
                 : row.default
-              : row.checked,
-        } || { value: null }
+              : row.checked) ?? null,
+        }
       );
       // Backwards compat with new Select data type
       if (row.type === 'select' || row.type === 'multi-select') {
