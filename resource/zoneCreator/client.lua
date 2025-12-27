@@ -63,10 +63,35 @@ local function round(number)
 	return number >= 0 and math.floor(number + 0.5) or math.ceil(number - 0.5)
 end
 
+local zoneCallback = nil
+
 local function closeCreator(cancel)
 	if not cancel then
 		if zoneType == 'poly' then
 			points[#points + 1] = vec(xCoord, yCoord)
+		end
+
+		local zoneData = {
+			zoneType = zoneType,
+			xCoord = xCoord,
+			yCoord = yCoord,
+			zCoord = zCoord,
+			heading = heading,
+			height = height,
+			width = width,
+			length = length,
+			points = points
+		}
+
+		if zoneCallback then
+			local callback = zoneCallback
+			zoneCallback = nil
+			callback(zoneData)
+			creatorActive = false
+			controlsActive = false
+			lib.hideTextUI()
+			zoneType = nil
+			return
 		end
 
         ---@type string[]?
@@ -110,6 +135,10 @@ local function closeCreator(cancel)
 	controlsActive = false
 	lib.hideTextUI()
 	zoneType = nil
+	if zoneCallback then
+		zoneCallback(nil)
+		zoneCallback = nil
+	end
 end
 
 local function drawRectangle(rec)
@@ -495,6 +524,22 @@ RegisterCommand('zone', function(source, args, rawCommand)
 
     startCreator(args[1], useLast)
 end, true)
+
+function startZoneCreator(zoneType, callback)
+	if zoneType ~= 'poly' and zoneType ~= 'box' and zoneType ~= 'sphere' then
+        if callback then callback(nil) end
+        return
+    end
+
+    if creatorActive then
+        if callback then callback(nil) end
+        return
+    end
+
+    zoneCallback = callback
+    startCreator(zoneType, false)
+end
+exports('startZoneCreator', startZoneCreator)
 
 CreateThread(function()
     Wait(1000)
