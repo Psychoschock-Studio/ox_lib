@@ -10,44 +10,63 @@ import LibIcon from '../../../components/LibIcon';
 
 const useStyles = createStyles((theme, params: { position?: MenuPosition; itemCount: number; selected: number }) => ({
   tooltip: {
-    backgroundColor: theme.colors.dark[6],
-    color: theme.colors.dark[2],
-    borderRadius: theme.radius.sm,
-    maxWidth: 350,
+    backgroundColor: 'var(--ox-bg-primary)',
+    color: 'var(--ox-text-secondary)',
+    borderRadius: 'var(--ox-radius)',
+    border: '1px solid var(--ox-border)',
+    maxWidth: 300,
     whiteSpace: 'normal',
+    padding: '10px 12px',
+    fontSize: 12,
+    boxShadow: 'var(--ox-shadow)',
   },
   container: {
     position: 'absolute',
     pointerEvents: 'none',
-    marginTop: params.position === 'top-left' || params.position === 'top-right' ? 5 : 0,
-    marginLeft: params.position === 'top-left' || params.position === 'bottom-left' ? 5 : 0,
-    marginRight: params.position === 'top-right' || params.position === 'bottom-right' ? 5 : 0,
-    marginBottom: params.position === 'bottom-left' || params.position === 'bottom-right' ? 5 : 0,
+    marginTop: params.position === 'top-left' || params.position === 'top-right' ? 20 : 0,
+    marginLeft: params.position === 'top-left' || params.position === 'bottom-left' ? 20 : 0,
+    marginRight: params.position === 'top-right' || params.position === 'bottom-right' ? 20 : 0,
+    marginBottom: params.position === 'bottom-left' || params.position === 'bottom-right' ? 20 : 0,
     right: params.position === 'top-right' || params.position === 'bottom-right' ? 1 : undefined,
     left: params.position === 'bottom-left' ? 1 : undefined,
     bottom: params.position === 'bottom-left' || params.position === 'bottom-right' ? 1 : undefined,
     fontFamily: 'Roboto',
-    width: 384,
+    width: 340,
   },
   buttonsWrapper: {
     height: 'fit-content',
-    maxHeight: 415,
+    maxHeight: 420,
     overflow: 'hidden',
-    borderRadius: params.itemCount <= 6 || params.selected === params.itemCount - 1 ? theme.radius.md : undefined,
-    backgroundColor: theme.colors.dark[8],
+    borderRadius: params.itemCount <= 6 || params.selected === params.itemCount - 1 
+      ? '0 0 var(--ox-radius-lg) var(--ox-radius-lg)' 
+      : undefined,
+    backgroundColor: 'var(--ox-bg-primary)',
     borderTopLeftRadius: 0,
     borderTopRightRadius: 0,
+    border: '1px solid var(--ox-border)',
+    borderTop: 'none',
   },
   scrollArrow: {
-    backgroundColor: theme.colors.dark[8],
+    backgroundColor: 'var(--ox-bg-primary)',
     textAlign: 'center',
-    borderBottomLeftRadius: theme.radius.md,
-    borderBottomRightRadius: theme.radius.md,
-    height: 25,
+    borderBottomLeftRadius: 'var(--ox-radius-lg)',
+    borderBottomRightRadius: 'var(--ox-radius-lg)',
+    border: '1px solid var(--ox-border)',
+    borderTop: 'none',
+    height: 28,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   scrollArrowIcon: {
-    color: theme.colors.dark[2],
-    fontSize: 20,
+    color: 'var(--ox-text-muted)',
+    fontSize: 14,
+  },
+  menuContainer: {
+    backgroundColor: 'var(--ox-bg-primary)',
+    borderRadius: 'var(--ox-radius-lg)',
+    boxShadow: 'var(--ox-shadow)',
+    overflow: 'hidden',
   },
 }));
 
@@ -140,7 +159,6 @@ const ListMenu: React.FC = () => {
       inline: 'start',
     });
     listRefs.current[selected]?.focus({ preventScroll: true });
-    // debounces the callback to avoid spam
     const timer = setTimeout(() => {
       fetchNui('changeSelected', [
         selected,
@@ -216,31 +234,33 @@ const ListMenu: React.FC = () => {
           classNames={{ tooltip: classes.tooltip }}
         >
           <Box className={classes.container}>
-            <Header title={menu.title} />
-            <Box className={classes.buttonsWrapper} onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) => moveMenu(e)}>
-              <FocusTrap active={visible}>
-                <Stack spacing={8} p={8} sx={{ overflowY: 'scroll' }}>
-                  {menu.items.map((item, index) => (
-                    <React.Fragment key={`menu-item-${index}`}>
-                      {item.label && (
-                        <ListItem
-                          index={index}
-                          item={item}
-                          scrollIndex={indexStates[index]}
-                          checked={checkedStates[index]}
-                          ref={listRefs}
-                        />
-                      )}
-                    </React.Fragment>
-                  ))}
-                </Stack>
-              </FocusTrap>
-            </Box>
-            {menu.items.length > 6 && selected !== menu.items.length - 1 && (
-              <Box className={classes.scrollArrow}>
-                <LibIcon icon="chevron-down" className={classes.scrollArrowIcon} />
+            <Box className={classes.menuContainer}>
+              <Header title={menu.title} />
+              <Box className={classes.buttonsWrapper} onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) => moveMenu(e)}>
+                <FocusTrap active={visible}>
+                  <Stack spacing={6} p={12} sx={{ overflowY: 'scroll' }}>
+                    {menu.items.map((item, index) => (
+                      <React.Fragment key={`menu-item-${index}`}>
+                        {item.label && (
+                          <ListItem
+                            index={index}
+                            item={item}
+                            scrollIndex={indexStates[index]}
+                            checked={checkedStates[index]}
+                            ref={listRefs}
+                          />
+                        )}
+                      </React.Fragment>
+                    ))}
+                  </Stack>
+                </FocusTrap>
               </Box>
-            )}
+              {menu.items.length > 6 && selected !== menu.items.length - 1 && (
+                <Box className={classes.scrollArrow}>
+                  <LibIcon icon="chevron-down" className={classes.scrollArrowIcon} />
+                </Box>
+              )}
+            </Box>
           </Box>
         </Tooltip>
       )}

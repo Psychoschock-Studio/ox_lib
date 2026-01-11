@@ -1,7 +1,7 @@
 import { useNuiEvent } from '../../hooks/useNuiEvent';
 import { toast, Toaster } from 'react-hot-toast';
 import ReactMarkdown from 'react-markdown';
-import { Box, Center, createStyles, Group, keyframes, RingProgress, Stack, Text, ThemeIcon } from '@mantine/core';
+import { Box, createStyles, keyframes, Stack, Text } from '@mantine/core';
 import React, { useState } from 'react';
 import tinycolor from 'tinycolor2';
 import type { NotificationProps } from '../../typings';
@@ -10,30 +10,53 @@ import LibIcon from '../../components/LibIcon';
 
 const useStyles = createStyles((theme) => ({
   container: {
-    width: 300,
+    width: 280,
     height: 'fit-content',
-    backgroundColor: theme.colors.dark[6],
-    color: theme.colors.dark[0],
-    padding: 12,
-    borderRadius: theme.radius.sm,
+    backgroundColor: 'var(--ox-bg-primary)',
+    color: 'var(--ox-text-primary)',
+    padding: '12px 14px',
+    borderRadius: 'var(--ox-radius)',
+    border: '1px solid var(--ox-border)',
     fontFamily: 'Roboto',
-    boxShadow: theme.shadows.sm,
+    boxShadow: 'var(--ox-shadow)',
+    position: 'relative',
+    overflow: 'hidden',
   },
   title: {
-    fontWeight: 500,
-    lineHeight: 'normal',
+    fontWeight: 600,
+    fontSize: 13,
+    lineHeight: 1.3,
+    color: 'var(--ox-text-primary)',
   },
   description: {
     fontSize: 12,
-    color: theme.colors.dark[2],
+    color: 'var(--ox-text-secondary)',
     fontFamily: 'Roboto',
-    lineHeight: 'normal',
+    lineHeight: 1.4,
+    marginTop: 2,
   },
   descriptionOnly: {
-    fontSize: 14,
-    color: theme.colors.dark[2],
+    fontSize: 13,
+    color: 'var(--ox-text-secondary)',
     fontFamily: 'Roboto',
-    lineHeight: 'normal',
+    lineHeight: 1.4,
+  },
+  iconContainer: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 32,
+    height: 32,
+    borderRadius: 6,
+    flexShrink: 0,
+  },
+  progressBar: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    height: 2,
+    backgroundColor: 'var(--theme-accent)',
+    borderRadius: '0 2px 0 0',
   },
 }));
 
@@ -71,10 +94,51 @@ const getAnimation = (visible: boolean, position: string) => {
   return `${createAnimation(animation.from, animation.to, visible)} ${animationOptions}`
 };
 
-const durationCircle = keyframes({
-  '0%': { strokeDasharray: `0, ${15.1 * 2 * Math.PI}` },
-  '100%': { strokeDasharray: `${15.1 * 2 * Math.PI}, 0` },
+const durationProgress = keyframes({
+  '0%': { width: '100%' },
+  '100%': { width: '0%' },
 });
+
+const getIconColor = (type?: string, customColor?: string): string => {
+  if (customColor) return tinycolor(customColor).toRgbString();
+  
+  switch (type) {
+    case 'error':
+      return '#f44336';
+    case 'success':
+      return '#4caf50';
+    case 'warning':
+      return '#ff9800';
+    default:
+      return 'var(--theme-accent)';
+  }
+};
+
+const getIconBgColor = (type?: string): string => {
+  switch (type) {
+    case 'error':
+      return 'rgba(244, 67, 54, 0.15)';
+    case 'success':
+      return 'rgba(76, 175, 80, 0.15)';
+    case 'warning':
+      return 'rgba(255, 152, 0, 0.15)';
+    default:
+      return 'rgba(var(--theme-accent-rgb), 0.15)';
+  }
+};
+
+const getIconBorderColor = (type?: string): string => {
+  switch (type) {
+    case 'error':
+      return 'rgba(244, 67, 54, 0.3)';
+    case 'success':
+      return 'rgba(76, 175, 80, 0.3)';
+    case 'warning':
+      return 'rgba(255, 152, 0, 0.3)';
+    default:
+      return 'rgba(var(--theme-accent-rgb), 0.3)';
+  }
+};
 
 const Notifications: React.FC = () => {
   const { classes } = useStyles();
@@ -86,14 +150,12 @@ const Notifications: React.FC = () => {
     const toastId = data.id?.toString();
     const duration = data.duration || 3000;
 
-    let iconColor: string;
     let position = data.position || 'top-right';
 
     data.showDuration = data.showDuration !== undefined ? data.showDuration : true;
 
     if (toastId) setToastKey(prevKey => prevKey + 1);
 
-    // Backwards compat with old notifications
     switch (position) {
       case 'top':
         position = 'top-center';
@@ -120,24 +182,9 @@ const Notifications: React.FC = () => {
       }
     }
 
-    if (!data.iconColor) {
-      switch (data.type) {
-        case 'error':
-          iconColor = 'red.6';
-          break;
-        case 'success':
-          iconColor = 'teal.6';
-          break;
-        case 'warning':
-          iconColor = 'yellow.6';
-          break;
-        default:
-          iconColor = 'blue.6';
-          break;
-      }
-    } else {
-      iconColor = tinycolor(data.iconColor).toRgbString();
-    }
+    const iconColor = getIconColor(data.type, data.iconColor);
+    const iconBgColor = getIconBgColor(data.type);
+    const iconBorderColor = getIconBorderColor(data.type);
 
     toast.custom(
       (t) => (
@@ -146,54 +193,27 @@ const Notifications: React.FC = () => {
             animation: getAnimation(t.visible, position),
             ...data.style,
           }}
-          className={`${classes.container}`}
+          className={classes.container}
         >
-          <Group noWrap spacing={12}>
+          <Box sx={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
             {data.icon && (
-              <>
-                {data.showDuration ? (
-                  <RingProgress
-                    key={toastKey}
-                    size={38}
-                    thickness={2}
-                    sections={[{ value: 100, color: iconColor }]}
-                    style={{ alignSelf: !data.alignIcon || data.alignIcon === 'center' ? 'center' : 'start' }}
-                    styles={{
-                      root: {
-                        '> svg > circle:nth-of-type(2)': {
-                          animation: `${durationCircle} linear forwards reverse`,
-                          animationDuration: `${duration}ms`,
-                        },
-                        margin: -3,
-                      },
-                    }}
-                    label={
-                      <Center>
-                        <ThemeIcon
-                          color={iconColor}
-                          radius="xl"
-                          size={32}
-                          variant={tinycolor(iconColor).getAlpha() < 0 ? undefined : 'light'}
-                        >
-                          <LibIcon icon={data.icon} fixedWidth color={iconColor} animation={data.iconAnimation} />
-                        </ThemeIcon>
-                      </Center>
-                    }
-                  />
-                ) : (
-                  <ThemeIcon
-                    color={iconColor}
-                    radius="xl"
-                    size={32}
-                    variant={tinycolor(iconColor).getAlpha() < 0 ? undefined : 'light'}
-                    style={{ alignSelf: !data.alignIcon || data.alignIcon === 'center' ? 'center' : 'start' }}
-                  >
-                    <LibIcon icon={data.icon} fixedWidth color={iconColor} animation={data.iconAnimation} />
-                  </ThemeIcon>
-                )}
-              </>
+              <Box 
+                className={classes.iconContainer}
+                sx={{
+                  backgroundColor: iconBgColor,
+                  border: `1px solid ${iconBorderColor}`,
+                  alignSelf: !data.alignIcon || data.alignIcon === 'center' ? 'center' : 'flex-start',
+                }}
+              >
+                <LibIcon 
+                  icon={data.icon} 
+                  fixedWidth 
+                  style={{ color: iconColor, fontSize: 14 }}
+                  animation={data.iconAnimation} 
+                />
+              </Box>
             )}
-            <Stack spacing={0}>
+            <Stack spacing={0} sx={{ flex: 1, minWidth: 0 }}>
               {data.title && <Text className={classes.title}>{data.title}</Text>}
               {data.description && (
                 <ReactMarkdown
@@ -204,7 +224,17 @@ const Notifications: React.FC = () => {
                 </ReactMarkdown>
               )}
             </Stack>
-          </Group>
+          </Box>
+          {data.showDuration && (
+            <Box
+              key={toastKey}
+              className={classes.progressBar}
+              sx={{
+                animation: `${durationProgress} linear forwards`,
+                animationDuration: `${duration}ms`,
+              }}
+            />
+          )}
         </Box>
       ),
       {

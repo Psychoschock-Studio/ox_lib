@@ -11,8 +11,59 @@ interface Props {
 }
 
 const useStyles = createStyles((theme) => ({
+  root: {
+    '& .mantine-TextInput-label, & .mantine-PasswordInput-label': {
+      color: 'var(--ox-text-muted)',
+      fontSize: 11,
+      textTransform: 'uppercase',
+      letterSpacing: '0.5px',
+      marginBottom: 6,
+      fontWeight: 500,
+    },
+    '& .mantine-TextInput-description, & .mantine-PasswordInput-description': {
+      color: 'var(--ox-text-muted)',
+      fontSize: 11,
+      marginBottom: 6,
+    },
+    '& .mantine-TextInput-input, & .mantine-PasswordInput-input': {
+      backgroundColor: '#333335',
+      border: 'none',
+      borderRadius: 8,
+      color: '#c1c2c5',
+      fontSize: 12,
+      padding: '8px 10px',
+      height: 'auto',
+      transition: 'all 0.2s',
+      '&:focus': {
+        backgroundColor: '#33343F',
+      },
+      '&::placeholder': {
+        color: 'rgba(255, 255, 255, 0.35)',
+        fontSize: 11,
+      },
+      '&:disabled': {
+        backgroundColor: 'rgba(255, 255, 255, 0.02)',
+        opacity: 0.6,
+      },
+    },
+    '& .mantine-TextInput-icon, & .mantine-PasswordInput-icon': {
+      color: '#5dade2',
+    },
+    '& .mantine-PasswordInput-innerInput': {
+      backgroundColor: 'transparent',
+      color: '#c1c2c5',
+      fontSize: 12,
+      '&::placeholder': {
+        color: 'rgba(255, 255, 255, 0.35)',
+        fontSize: 11,
+      },
+    },
+  },
   eyeIcon: {
-    color: theme.colors.dark[2],
+    color: 'rgba(255, 255, 255, 0.4)',
+    '&:hover': {
+      color: 'rgba(255, 255, 255, 0.7)',
+    },
   },
 }));
 
@@ -33,6 +84,7 @@ const InputField: React.FC<Props> = (props) => {
           maxLength={props.row.max}
           disabled={props.row.disabled}
           withAsterisk={props.row.required}
+          className={classes.root}
         />
       ) : (
         <PasswordInput
@@ -46,6 +98,7 @@ const InputField: React.FC<Props> = (props) => {
           maxLength={props.row.max}
           disabled={props.row.disabled}
           withAsterisk={props.row.required}
+          className={classes.root}
           visibilityToggleIcon={({ reveal, size }) => (
             <LibIcon
               icon={reveal ? 'eye-slash' : 'eye'}

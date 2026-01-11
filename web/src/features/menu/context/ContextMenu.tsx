@@ -16,57 +16,62 @@ const openMenu = (id: string | undefined) => {
 const useStyles = createStyles((theme) => ({
   container: {
     position: 'absolute',
-    top: '5%',
+    top: '15%',
     left: '3%',
-    width: 290,
+    width: 300,
     maxHeight: 'calc(9 * 60px + 80px)',
-    backgroundColor: 'rgba(30, 30, 30, 0.92)',
-    padding: '10px 12px 12px 12px',
-    borderRadius: '3px',
+    backgroundColor: 'var(--ox-bg-primary)',
+    padding: 0,
+    borderRadius: 'var(--ox-radius-lg)',
+    border: '1px solid var(--ox-border)',
+    boxShadow: 'var(--ox-shadow)',
   },
   header: {
+    display: 'flex',
     justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    marginBottom: 10,
-    position: 'relative',
+    alignItems: 'center',
+    padding: '14px 16px',
+    borderBottom: '1px solid var(--ox-border)',
+    backgroundColor: 'var(--ox-bg-secondary)',
   },
-  titleContainer: {
+  headerLeft: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 10,
     flex: 1,
   },
   titleText: {
-    color: 'rgba(220, 220, 220, 0.95)',
-    fontSize: '14px',
-    fontWeight: 400,
+    color: 'var(--ox-text-primary)',
+    fontSize: 14,
+    fontWeight: 600,
+    '& p': {
+      margin: 0,
+    },
   },
   buttonsContainer: {
     maxHeight: 'calc(9 * 60px)',
     overflowY: 'auto',
-    overflowX: 'hidden',
-    paddingRight: '4px',
+    overflowX: 'visible',
+    padding: 12,
+    borderBottomLeftRadius: 'var(--ox-radius-lg)',
+    borderBottomRightRadius: 'var(--ox-radius-lg)',
     '&::-webkit-scrollbar': {
-      width: '4px',
+      width: 4,
     },
     '&::-webkit-scrollbar-track': {
-      background: 'transparent',
+      background: 'rgba(255, 255, 255, 0.05)',
+      borderRadius: 2,
     },
     '&::-webkit-scrollbar-thumb': {
-      background: 'rgba(80, 80, 80, 0.4)',
-      borderRadius: '2px',
+      background: 'rgba(255, 255, 255, 0.2)',
+      borderRadius: 2,
     },
     '&::-webkit-scrollbar-thumb:hover': {
-      background: 'rgba(100, 100, 100, 0.5)',
+      background: 'rgba(255, 255, 255, 0.3)',
     },
   },
   buttonsFlexWrapper: {
-    gap: 4,
-  },
-  closeButton: {
-    position: 'absolute',
-    top: 0,
-    right: 0,
-  },
-  backButton: {
-    marginRight: '8px',
+    gap: 6,
   },
 }));
 
@@ -84,7 +89,6 @@ const ContextMenu: React.FC = () => {
     fetchNui('closeContext');
   };
 
-  // Hides the context menu on ESC
   useEffect(() => {
     if (!visible) return;
 
@@ -112,21 +116,15 @@ const ContextMenu: React.FC = () => {
     <ScaleFade visible={visible}>
       <Box className={classes.container}>
         <Box className={classes.header}>
-          <Flex align="center">
+          <Box className={classes.headerLeft}>
             {contextMenu.menu && (
-              <Box className={classes.backButton}>
-                <HeaderButton icon="chevron-left" iconSize={14} handleClick={() => openMenu(contextMenu.menu)} />
-              </Box>
+              <HeaderButton icon="chevron-left" iconSize={12} handleClick={() => openMenu(contextMenu.menu)} />
             )}
-            <Box className={classes.titleContainer}>
-              <Text className={classes.titleText}>
-                <ReactMarkdown components={MarkdownComponents}>{contextMenu.title}</ReactMarkdown>
-              </Text>
-            </Box>
-          </Flex>
-          <Box className={classes.closeButton}>
-            <HeaderButton icon="xmark" canClose={contextMenu.canClose} iconSize={16} handleClick={closeContext} />
+            <Text className={classes.titleText}>
+              <ReactMarkdown components={MarkdownComponents}>{contextMenu.title}</ReactMarkdown>
+            </Text>
           </Box>
+          <HeaderButton icon="xmark" canClose={contextMenu.canClose} iconSize={14} handleClick={closeContext} />
         </Box>
         <Box className={classes.buttonsContainer}>
           <Stack className={classes.buttonsFlexWrapper}>

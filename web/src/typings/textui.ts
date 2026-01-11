@@ -12,4 +12,6 @@ export interface TextUiProps {
   iconAnimation?: IconAnimation;
   style?: React.CSSProperties;
   alignIcon?: 'top' | 'center';
+  holdProgress?: number;
+  holdMax?: number;
 }

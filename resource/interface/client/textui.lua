@@ -12,6 +12,8 @@
 ---@field iconColor? string;
 ---@field style? string | table;
 ---@field alignIcon? 'top' | 'center';
+---@field holdProgress? number;
+---@field holdMax? number;
 
 local isOpen = false
 local currentText
@@ -19,9 +21,9 @@ local currentText
 ---@param text string
 ---@param options? TextUIOptions
 function lib.showTextUI(text, options)
-    if currentText == text then return end
-
     if not options then options = {} end
+
+    if currentText == text and not options.holdProgress then return end
 
     options.text = text
     currentText = text

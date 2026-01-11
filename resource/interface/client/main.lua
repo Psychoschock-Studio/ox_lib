@@ -20,3 +20,13 @@ function lib.resetNuiFocus()
     SetNuiFocus(false, false)
     SetNuiFocusKeepInput(keepInput)
 end
+
+---@param r number Red value (0-255)
+---@param g number Green value (0-255)
+---@param b number Blue value (0-255)
+function lib.setThemeColor(r, g, b)
+    SendNUIMessage({
+        action = 'setThemeColor',
+        data = { r = r, g = g, b = b }
+    })
+end

@@ -21,74 +21,91 @@ const useStyles = createStyles((theme, params: { disabled?: boolean; readOnly?: 
   },
   label: {
     width: '100%',
-    color: params.disabled ? 'rgba(150, 150, 150, 0.6)' : 'rgba(220, 220, 220, 0.95)',
+    color: params.disabled ? 'var(--ox-text-muted)' : 'var(--ox-text-primary)',
     whiteSpace: 'pre-wrap',
-    fontSize: '12.5px',
+    fontSize: 12,
   },
   button: {
     height: 'fit-content',
     width: '100%',
-    padding: '10px 8px',
+    padding: '10px 12px',
     backgroundColor: params.disabled 
-      ? 'rgba(50, 50, 50, 0.4)' 
-      : 'rgba(55, 55, 55, 0.75)',
-    backdropFilter: 'blur(2px)',
-    border: 'none',
-    borderRadius: '2px',
+      ? 'rgba(255, 255, 255, 0.02)' 
+      : 'rgba(255, 255, 255, 0.03)',
+    border: '1px solid var(--ox-border)',
+    borderRadius: 'var(--ox-radius)',
+    transition: 'all 0.2s',
     '&:hover': {
       backgroundColor: params.readOnly 
-        ? 'rgba(55, 55, 55, 0.75)' 
-        : 'rgba(65, 65, 65, 0.85)',
-      cursor: params.readOnly ? 'unset' : 'pointer',
+        ? 'rgba(255, 255, 255, 0.03)' 
+        : 'rgba(255, 255, 255, 0.08)',
+      borderColor: params.readOnly ? 'var(--ox-border)' : 'var(--ox-border-hover)',
+      cursor: params.readOnly ? 'default' : 'pointer',
     },
     '&:active': {
-      transform: params.readOnly ? 'unset' : 'scale(0.98)',
+      transform: params.readOnly ? 'none' : 'scale(0.99)',
     },
   },
   iconImage: {
-    maxWidth: '22px',
+    maxWidth: 20,
     filter: params.disabled ? 'grayscale(100%) opacity(0.5)' : 'none',
   },
   description: {
-    color: params.disabled ? 'rgba(130, 130, 130, 0.5)' : 'rgba(160, 160, 160, 0.85)',
-    fontSize: '10.5px',
-    lineHeight: '1.4',
+    color: params.disabled ? 'rgba(255, 255, 255, 0.3)' : 'var(--ox-text-muted)',
+    fontSize: 11,
+    lineHeight: 1.4,
   },
   dropdown: {
-    padding: 10,
-    color: 'rgba(220, 220, 220, 0.95)',
+    padding: 12,
+    color: 'var(--ox-text-primary)',
     fontSize: 12,
     maxWidth: 256,
     width: 'fit-content',
-    border: 'none',
-    backgroundColor: 'rgba(40, 40, 40, 0.95)',
-    backdropFilter: 'blur(8px)',
+    border: '1px solid var(--ox-border)',
+    borderRadius: 'var(--ox-radius)',
+    backgroundColor: 'var(--ox-bg-primary)',
+    boxShadow: '0 12px 40px rgba(0, 0, 0, 0.6)',
+    zIndex: 1000,
   },
   buttonStack: {
-    gap: 2,
-    flex: '1',
+    gap: 4,
+    flex: 1,
   },
   buttonGroup: {
-    gap: 7,
+    gap: 10,
     flexWrap: 'nowrap',
   },
   buttonIconContainer: {
-    width: 22,
-    height: 22,
+    width: 28,
+    height: 28,
+    display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: 'rgba(var(--theme-accent-rgb), 0.15)',
+    border: '1px solid rgba(var(--theme-accent-rgb), 0.3)',
+    borderRadius: 6,
   },
   buttonTitleText: {
     overflowWrap: 'break-word',
-    fontSize: '12.5px',
-    fontWeight: 400,
+    fontSize: 12,
+    fontWeight: 500,
+    color: 'var(--ox-text-primary)',
+    '& p': {
+      margin: 0,
+    },
   },
   buttonArrowContainer: {
     justifyContent: 'center',
     alignItems: 'center',
     width: 20,
     height: 20,
-    color: 'rgba(180, 180, 180, 0.7)',
+    color: 'var(--ox-text-muted)',
+  },
+  progress: {
+    marginTop: 8,
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    borderRadius: 4,
+    height: 4,
   },
 }));
 
@@ -105,6 +122,16 @@ const ContextButton: React.FC<{
         position="right-start"
         disabled={button.disabled || !(button.metadata || button.image)}
         openDelay={200}
+        shadow="xl"
+        zIndex={1000}
+        styles={{
+          dropdown: {
+            backgroundColor: 'var(--ox-bg-primary)',
+            border: '1px solid var(--ox-border)',
+            borderRadius: 'var(--ox-radius)',
+            boxShadow: '0 12px 40px rgba(0, 0, 0, 0.6)',
+          },
+        }}
       >
         <HoverCard.Target>
           <Button
@@ -131,8 +158,10 @@ const ContextButton: React.FC<{
                           <LibIcon
                             icon={button.icon as IconProp}
                             fixedWidth
-                            size="lg"
-                            style={{ color: button.iconColor }}
+                            style={{ 
+                              color: button.iconColor || 'var(--theme-accent)',
+                              fontSize: 12,
+                            }}
                             animation={button.iconAnimation}
                           />
                         )}
@@ -149,45 +178,52 @@ const ContextButton: React.FC<{
                   </Text>
                 )}
                 {button.progress !== undefined && (
-                  <Progress value={button.progress} size="sm" color={button.colorScheme || 'dark.3'} />
+                  <Progress 
+                    value={button.progress} 
+                    size={4}
+                    radius={4}
+                    color={button.colorScheme || 'var(--theme-accent)'} 
+                    className={classes.progress}
+                  />
                 )}
               </Stack>
               {(button.menu || button.arrow) && button.arrow !== false && (
                 <Stack className={classes.buttonArrowContainer}>
-                  <LibIcon icon="chevron-right" fixedWidth />
+                  <LibIcon icon="chevron-right" fixedWidth style={{ fontSize: 12 }} />
                 </Stack>
               )}
             </Group>
           </Button>
         </HoverCard.Target>
         <HoverCard.Dropdown className={classes.dropdown}>
-          {button.image && <Image src={button.image} />}
+          {button.image && <Image src={button.image} radius="sm" mb={8} />}
           {Array.isArray(button.metadata) ? (
             button.metadata.map(
               (
                 metadata: string | { label: string; value?: any; progress?: number; colorScheme?: string },
                 index: number
               ) => (
-                <>
-                  <Text key={`context-metadata-${index}`}>
+                <div key={`context-metadata-${index}`}>
+                  <Text size="xs" color="dimmed" mb={metadata && typeof metadata === 'object' && metadata.progress !== undefined ? 4 : 2}>
                     {typeof metadata === 'string' ? `${metadata}` : `${metadata.label}: ${metadata?.value ?? ''}`}
                   </Text>
-
                   {typeof metadata === 'object' && metadata.progress !== undefined && (
                     <Progress
                       value={metadata.progress}
-                      size="sm"
-                      color={metadata.colorScheme || button.colorScheme || 'dark.3'}
+                      size={4}
+                      radius={4}
+                      color={metadata.colorScheme || button.colorScheme || 'var(--theme-accent)'}
+                      mb={4}
                     />
                   )}
-                </>
+                </div>
               )
             )
           ) : (
             <>
               {typeof button.metadata === 'object' &&
                 Object.entries(button.metadata).map((metadata: { [key: string]: any }, index) => (
-                  <Text key={`context-metadata-${index}`}>
+                  <Text key={`context-metadata-${index}`} size="xs" color="dimmed">
                     {metadata[0]}: {metadata[1]}
                   </Text>
                 ))}

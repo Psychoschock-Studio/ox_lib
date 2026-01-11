@@ -11,17 +11,19 @@ interface Props {
 
 const useStyles = createStyles((theme, params: { canClose?: boolean }) => ({
   button: {
-    borderRadius: '2px',
-    minWidth: 'auto',
-    width: 'auto',
-    height: 'auto',
+    borderRadius: 6,
+    minWidth: 28,
+    width: 28,
+    height: 28,
     textAlign: 'center',
     justifyContent: 'center',
-    padding: '3px 5px',
-    backgroundColor: 'transparent',
-    border: 'none',
+    padding: 0,
+    backgroundColor: params.canClose === false ? 'transparent' : 'rgba(255, 255, 255, 0.05)',
+    border: params.canClose === false ? 'none' : '1px solid var(--ox-border)',
+    transition: 'all 0.2s',
     '&:hover': {
       backgroundColor: params.canClose === false ? 'transparent' : 'rgba(255, 255, 255, 0.1)',
+      borderColor: params.canClose === false ? 'transparent' : 'var(--ox-border-hover)',
     },
   },
   root: {
@@ -30,7 +32,7 @@ const useStyles = createStyles((theme, params: { canClose?: boolean }) => ({
     minHeight: 'auto',
   },
   label: {
-    color: params.canClose === false ? 'rgba(140, 140, 140, 0.5)' : 'rgba(200, 60, 60, 0.95)',
+    color: params.canClose === false ? 'rgba(140, 140, 140, 0.5)' : 'var(--ox-text-muted)',
   },
 }));
 

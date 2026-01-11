@@ -1,14 +1,11 @@
 import React from 'react';
 import { useNuiEvent } from '../../hooks/useNuiEvent';
-import { Box, createStyles, Group } from '@mantine/core';
-import ReactMarkdown from 'react-markdown';
+import { Box, createStyles } from '@mantine/core';
 import ScaleFade from '../../transitions/ScaleFade';
-import remarkGfm from 'remark-gfm';
 import type { TextUiPosition, TextUiProps } from '../../typings';
-import MarkdownComponents from '../../config/MarkdownComponents';
 import LibIcon from '../../components/LibIcon';
 
-const useStyles = createStyles((theme, params: { position?: TextUiPosition }) => ({
+const useStyles = createStyles((theme, params: { position?: TextUiPosition; holdProgress?: number }) => ({
   wrapper: {
     height: '100%',
     width: '100%',
@@ -22,16 +19,91 @@ const useStyles = createStyles((theme, params: { position?: TextUiPosition }) =>
       params.position === 'left-center' ? 'flex-start' : 'center',
   },
   container: {
-    fontSize: 16,
-    padding: 12,
-    margin: 8,
-    backgroundColor: theme.colors.dark[6],
-    color: theme.colors.dark[0],
+    position: 'relative',
+    display: 'flex',
+    alignItems: 'center',
+    gap: 10,
+    padding: '10px 14px',
+    margin: 20,
+    backgroundColor: '#1f1f1f',
+    borderRadius: 10,
+    overflow: 'hidden',
+    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.4)',
+  },
+  holdProgressBar: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    height: '100%',
+    backgroundColor: 'rgba(93, 173, 226, 0.25)',
+    transition: 'width 0.08s linear',
+    width: `${params.holdProgress || 0}%`,
+    zIndex: 0,
+  },
+  content: {
+    position: 'relative',
+    zIndex: 1,
+    display: 'flex',
+    alignItems: 'center',
+    gap: 10,
+  },
+  icon: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    color: '#5dade2',
+    fontSize: 14,
+  },
+  text: {
     fontFamily: 'Roboto',
-    borderRadius: theme.radius.sm,
-    boxShadow: theme.shadows.sm,
+    fontSize: 13,
+    fontWeight: 600,
+    color: 'rgba(255, 255, 255, 0.9)',
+    letterSpacing: '0.2px',
+  },
+  keyBadge: {
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    minWidth: 22,
+    height: 22,
+    padding: '0 7px',
+    backgroundColor: 'rgba(79, 195, 247, 0.25)',
+    border: '1px solid rgba(79, 195, 247, 0.5)',
+    borderRadius: 4,
+    color: '#4fc3f7',
+    fontSize: 11,
+    fontWeight: 700,
+    fontFamily: "'Roboto Mono', 'Courier New', monospace",
+    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.3)',
+    marginRight: 6,
   },
 }));
+
+const parseTextWithKeys = (text: string, keyBadgeClass: string): React.ReactNode[] => {
+  const parts: React.ReactNode[] = [];
+  const regex = /\[([A-Z0-9]+)\]/g;
+  let lastIndex = 0;
+  let match;
+
+  while ((match = regex.exec(text)) !== null) {
+    if (match.index > lastIndex) {
+      parts.push(text.slice(lastIndex, match.index));
+    }
+    parts.push(
+      <span key={match.index} className={keyBadgeClass}>
+        {match[1]}
+      </span>
+    );
+    lastIndex = regex.lastIndex;
+  }
+
+  if (lastIndex < text.length) {
+    parts.push(text.slice(lastIndex));
+  }
+
+  return parts;
+};
 
 const TextUI: React.FC = () => {
   const [data, setData] = React.useState<TextUiProps>({
@@ -39,38 +111,47 @@ const TextUI: React.FC = () => {
     position: 'right-center',
   });
   const [visible, setVisible] = React.useState(false);
-  const { classes } = useStyles({ position: data.position });
+  
+  const holdProgress = data.holdProgress !== undefined && data.holdMax !== undefined && data.holdMax > 0
+    ? Math.min(100, (data.holdProgress / data.holdMax) * 100)
+    : 0;
+    
+  const { classes } = useStyles({ position: data.position, holdProgress });
 
   useNuiEvent<TextUiProps>('textUi', (data) => {
-    if (!data.position) data.position = 'right-center'; // Default right position
+    if (!data.position) data.position = 'right-center';
     setData(data);
     setVisible(true);
   });
 
   useNuiEvent('textUiHide', () => setVisible(false));
 
+  const cleanText = data.text.replace(/\*\*/g, '');
+  const parsedContent = parseTextWithKeys(cleanText, classes.keyBadge);
+
   return (
     <>
       <Box className={classes.wrapper}>
         <ScaleFade visible={visible}>
           <Box style={data.style} className={classes.container}>
-            <Group spacing={12}>
+            {holdProgress > 0 && <Box className={classes.holdProgressBar} />}
+            <Box className={classes.content}>
               {data.icon && (
-                <LibIcon
-                  icon={data.icon}
-                  fixedWidth
-                  size="lg"
-                  animation={data.iconAnimation}
-                  style={{
-                    color: data.iconColor,
-                    alignSelf: !data.alignIcon || data.alignIcon === 'center' ? 'center' : 'start',
-                  }}
-                />
+                <Box className={classes.icon}>
+                  <LibIcon
+                    icon={data.icon}
+                    fixedWidth
+                    animation={data.iconAnimation}
+                    style={{
+                      color: data.iconColor || '#5dade2',
+                    }}
+                  />
+                </Box>
               )}
-              <ReactMarkdown components={MarkdownComponents} remarkPlugins={[remarkGfm]}>
-                {data.text}
-              </ReactMarkdown>
-            </Group>
+              <Box className={classes.text}>
+                {parsedContent}
+              </Box>
+            </Box>
           </Box>
         </ScaleFade>
       </Box>
