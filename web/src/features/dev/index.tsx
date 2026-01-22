@@ -52,7 +52,7 @@ const useStyles = createStyles((theme) => ({
   actionButton: {
     backgroundColor: '#333335',
     border: 'none',
-    color: '#5dade2',
+    color: 'var(--theme-accent)',
     '&:hover': {
       backgroundColor: '#33343F',
     },

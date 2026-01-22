@@ -42,7 +42,7 @@ const useStyles = createStyles((theme) => ({
     height: 0,
     position: 'absolute',
     '&:checked + span': {
-      backgroundColor: '#5dade2',
+      backgroundColor: 'var(--theme-accent)',
     },
     '&:checked + span::before': {
       transform: 'translateX(18px)',

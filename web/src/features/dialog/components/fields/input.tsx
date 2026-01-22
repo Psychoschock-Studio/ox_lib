@@ -47,7 +47,7 @@ const useStyles = createStyles((theme) => ({
       },
     },
     '& .mantine-TextInput-icon, & .mantine-PasswordInput-icon': {
-      color: '#5dade2',
+      color: 'var(--theme-accent)',
     },
     '& .mantine-PasswordInput-innerInput': {
       backgroundColor: 'transparent',

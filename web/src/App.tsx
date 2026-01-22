@@ -16,9 +16,27 @@ import RadialMenu from './features/menu/radial';
 import { theme } from './theme';
 import { MantineProvider } from '@mantine/core';
 import { useConfig } from './providers/ConfigProvider';
+import { useTheme } from './providers/ThemeProvider';
+import { useMemo } from 'react';
 
 const App: React.FC = () => {
   const { config } = useConfig();
+  const { theme: themeColors } = useTheme();
+  
+  const mantineTheme = useMemo(() => {
+    const colors = Array(10).fill(themeColors.accent);
+    colors[0] = themeColors.accentLight;
+    colors[9] = themeColors.accentDark;
+    
+    return {
+      ...theme,
+      ...config,
+      colors: {
+        ...theme.colors,
+        blue: colors as [string, string, string, string, string, string, string, string, string, string],
+      },
+    };
+  }, [config, themeColors]);
 
   useNuiEvent('setClipboard', (data: string) => {
     setClipboard(data);
@@ -27,7 +45,7 @@ const App: React.FC = () => {
   fetchNui('init');
 
   return (
-    <MantineProvider withNormalizeCSS withGlobalStyles theme={{ ...theme, ...config }}>
+    <MantineProvider withNormalizeCSS withGlobalStyles theme={mantineTheme}>
       <Progressbar />
       <CircleProgressbar />
       <Notifications />

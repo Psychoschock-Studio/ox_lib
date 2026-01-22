@@ -41,7 +41,7 @@ const useStyles = createStyles((theme) => ({
       },
     },
     '& .mantine-Select-icon, & .mantine-MultiSelect-icon': {
-      color: '#5dade2',
+      color: 'var(--theme-accent)',
     },
     '& .mantine-Select-rightSection, & .mantine-MultiSelect-rightSection': {
       color: 'rgba(255, 255, 255, 0.4)',
@@ -61,23 +61,23 @@ const useStyles = createStyles((theme) => ({
         backgroundColor: '#33343F',
       },
       '&[data-selected]': {
-        backgroundColor: 'rgba(93, 173, 226, 0.2)',
-        color: '#5dade2',
+        backgroundColor: 'rgba(var(--theme-accent-rgb), 0.2)',
+        color: 'var(--theme-accent)',
         '&:hover': {
-          backgroundColor: 'rgba(93, 173, 226, 0.25)',
+          backgroundColor: 'rgba(var(--theme-accent-rgb), 0.25)',
         },
       },
     },
     '& .mantine-MultiSelect-value': {
-      backgroundColor: 'rgba(93, 173, 226, 0.2)',
-      color: '#5dade2',
+      backgroundColor: 'rgba(var(--theme-accent-rgb), 0.2)',
+      color: 'var(--theme-accent)',
       fontSize: 11,
       borderRadius: 4,
     },
     '& .mantine-MultiSelect-defaultValueRemove': {
-      color: '#5dade2',
+      color: 'var(--theme-accent)',
       '&:hover': {
-        backgroundColor: 'rgba(93, 173, 226, 0.3)',
+        backgroundColor: 'rgba(var(--theme-accent-rgb), 0.3)',
       },
     },
   },

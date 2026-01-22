@@ -29,4 +29,8 @@ function lib.setThemeColor(r, g, b)
         action = 'setThemeColor',
         data = { r = r, g = g, b = b }
     })
+    
+    if GetResourceState('ox_inventory') == 'started' then
+        TriggerEvent('ox_inventory:setThemeColor', r, g, b)
+    end
 end

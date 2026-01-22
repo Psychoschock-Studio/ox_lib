@@ -81,17 +81,17 @@ const useStyles = createStyles((theme) => ({
     },
   },
   confirmButton: {
-    backgroundColor: 'rgba(79, 195, 247, 0.2)',
-    border: '1px solid rgba(79, 195, 247, 0.3)',
-    color: '#4fc3f7',
+    backgroundColor: 'rgba(var(--theme-accent-rgb), 0.2)',
+    border: '1px solid rgba(var(--theme-accent-rgb), 0.3)',
+    color: 'var(--theme-accent)',
     padding: '7px 14px',
     borderRadius: 6,
     fontSize: 11,
     fontWeight: 500,
     transition: 'all 0.2s',
     '&:hover': {
-      backgroundColor: 'rgba(79, 195, 247, 0.3)',
-      borderColor: 'rgba(79, 195, 247, 0.5)',
+      backgroundColor: 'rgba(var(--theme-accent-rgb), 0.3)',
+      borderColor: 'rgba(var(--theme-accent-rgb), 0.5)',
     },
   },
 }));

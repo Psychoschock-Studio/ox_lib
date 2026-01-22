@@ -40,7 +40,7 @@ const useStyles = createStyles((theme) => ({
   percentage: {
     fontSize: 13,
     fontWeight: 700,
-    color: '#4fc3f7',
+    color: 'var(--theme-accent)',
     fontFamily: 'Roboto Mono',
     textShadow: '0 2px 10px rgba(0, 0, 0, 0.8)',
   },
@@ -78,10 +78,10 @@ const Segment: React.FC<SegmentProps> = ({ isActive, isTransitioning, transition
         height: 6,
         borderRadius: 1,
         backgroundColor: isActive || isTransitioning 
-          ? `rgba(79, 195, 247, ${0.3 + opacity * 0.7})` 
+          ? `rgba(var(--theme-accent-rgb), ${0.3 + opacity * 0.7})` 
           : 'rgba(255, 255, 255, 0.12)',
         boxShadow: (isActive || isTransitioning) 
-          ? `0 0 ${6 + glowIntensity * 4}px rgba(79, 195, 247, ${glowIntensity})` 
+          ? `0 0 ${6 + glowIntensity * 4}px rgba(var(--theme-accent-rgb), ${glowIntensity})` 
           : 'none',
         transition: 'all 0.25s ease-out',
       }}

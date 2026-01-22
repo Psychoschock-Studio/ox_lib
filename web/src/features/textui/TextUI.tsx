@@ -35,7 +35,7 @@ const useStyles = createStyles((theme, params: { position?: TextUiPosition; hold
     top: 0,
     left: 0,
     height: '100%',
-    backgroundColor: 'rgba(93, 173, 226, 0.25)',
+    backgroundColor: 'rgba(var(--theme-accent-rgb), 0.25)',
     transition: 'width 0.08s linear',
     width: `${params.holdProgress || 0}%`,
     zIndex: 0,
@@ -51,7 +51,7 @@ const useStyles = createStyles((theme, params: { position?: TextUiPosition; hold
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    color: '#5dade2',
+    color: 'var(--theme-accent)',
     fontSize: 14,
   },
   text: {
@@ -68,10 +68,10 @@ const useStyles = createStyles((theme, params: { position?: TextUiPosition; hold
     minWidth: 22,
     height: 22,
     padding: '0 7px',
-    backgroundColor: 'rgba(79, 195, 247, 0.25)',
-    border: '1px solid rgba(79, 195, 247, 0.5)',
+    backgroundColor: 'rgba(var(--theme-accent-rgb), 0.25)',
+    border: '1px solid rgba(var(--theme-accent-rgb), 0.5)',
     borderRadius: 4,
-    color: '#4fc3f7',
+    color: 'var(--theme-accent)',
     fontSize: 11,
     fontWeight: 700,
     fontFamily: "'Roboto Mono', 'Courier New', monospace",
@@ -143,7 +143,7 @@ const TextUI: React.FC = () => {
                     fixedWidth
                     animation={data.iconAnimation}
                     style={{
-                      color: data.iconColor || '#5dade2',
+                      color: data.iconColor || 'var(--theme-accent)',
                     }}
                   />
                 </Box>
