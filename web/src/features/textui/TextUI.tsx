@@ -60,6 +60,7 @@ const useStyles = createStyles((theme, params: { position?: TextUiPosition; hold
     fontWeight: 600,
     color: 'rgba(255, 255, 255, 0.9)',
     letterSpacing: '0.2px',
+    whiteSpace: 'pre-line',
   },
   keyBadge: {
     display: 'inline-flex',
