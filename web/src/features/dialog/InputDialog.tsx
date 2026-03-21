@@ -39,7 +39,7 @@ const useStyles = createStyles((theme) => ({
   },
   body: {
     padding: '14px 16px',
-    maxHeight: 350,
+    maxHeight: 'min(72vh, 620px)',
     overflowY: 'auto',
     overflowX: 'hidden',
     '&::-webkit-scrollbar': {
