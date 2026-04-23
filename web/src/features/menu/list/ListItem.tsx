@@ -11,6 +11,7 @@ interface Props {
   index: number;
   scrollIndex: number;
   checked: boolean;
+  isSelected: boolean;
 }
 
 const useStyles = createStyles((theme, params: { iconColor?: string }) => ({
@@ -23,13 +24,19 @@ const useStyles = createStyles((theme, params: { iconColor?: string }) => ({
     transition: 'all 0.2s',
     cursor: 'pointer',
     '&:focus': {
-      backgroundColor: 'rgba(var(--theme-accent-rgb), 0.15)',
-      borderColor: 'rgba(var(--theme-accent-rgb), 0.3)',
       outline: 'none',
     },
     '&:hover': {
       backgroundColor: 'rgba(255, 255, 255, 0.06)',
       borderColor: 'var(--ox-border-hover)',
+    },
+  },
+  selected: {
+    backgroundColor: 'rgba(var(--theme-accent-rgb), 0.15)',
+    borderColor: 'rgba(var(--theme-accent-rgb), 0.3)',
+    '&:hover': {
+      backgroundColor: 'rgba(var(--theme-accent-rgb), 0.2)',
+      borderColor: 'rgba(var(--theme-accent-rgb), 0.35)',
     },
   },
   iconImage: {
@@ -89,13 +96,13 @@ const useStyles = createStyles((theme, params: { iconColor?: string }) => ({
   },
 }));
 
-const ListItem = forwardRef<Array<HTMLDivElement | null>, Props>(({ item, index, scrollIndex, checked }, ref) => {
+const ListItem = forwardRef<Array<HTMLDivElement | null>, Props>(({ item, index, scrollIndex, checked, isSelected }, ref) => {
   const { classes } = useStyles({ iconColor: item.iconColor });
 
   return (
     <Box
       tabIndex={index}
-      className={classes.buttonContainer}
+      className={isSelected ? `${classes.buttonContainer} ${classes.selected}` : classes.buttonContainer}
       key={`item-${index}`}
       ref={(element: HTMLDivElement) => {
         if (ref)

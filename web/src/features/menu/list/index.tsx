@@ -158,7 +158,9 @@ const ListMenu: React.FC = () => {
       block: 'nearest',
       inline: 'start',
     });
-    listRefs.current[selected]?.focus({ preventScroll: true });
+    const applyFocus = () => listRefs.current[selected]?.focus({ preventScroll: true });
+    applyFocus();
+    const focusLater = window.setTimeout(applyFocus, 0);
     const timer = setTimeout(() => {
       fetchNui('changeSelected', [
         selected,
@@ -170,7 +172,10 @@ const ListMenu: React.FC = () => {
         menu.items[selected].values ? 'isScroll' : menu.items[selected].checked ? 'isCheck' : null,
       ]).catch();
     }, 100);
-    return () => clearTimeout(timer);
+    return () => {
+      clearTimeout(focusLater);
+      clearTimeout(timer);
+    };
   }, [selected, menu]);
 
   useEffect(() => {
@@ -196,9 +201,11 @@ const ListMenu: React.FC = () => {
 
   useNuiEvent('setMenu', (data: MenuSettings) => {
     firstRenderRef.current = true;
-    if (!data.startItemIndex || data.startItemIndex < 0) data.startItemIndex = 0;
-    else if (data.startItemIndex >= data.items.length) data.startItemIndex = data.items.length - 1;
-    setSelected(data.startItemIndex);
+    let start = data.startItemIndex;
+    if (start === undefined || start === null || start < 0) start = 0;
+    else if (start >= data.items.length) start = data.items.length - 1;
+    data.startItemIndex = start;
+    setSelected(start);
     if (!data.position) data.position = 'top-left';
     listRefs.current = [];
     setMenu(data);
@@ -211,7 +218,7 @@ const ListMenu: React.FC = () => {
     }
     setIndexStates(arrayIndexes);
     setCheckedStates(checkedIndexes);
-    listRefs.current[data.startItemIndex]?.focus();
+    window.setTimeout(() => listRefs.current[start]?.focus({ preventScroll: true }), 0);
   });
 
   return (
@@ -247,6 +254,7 @@ const ListMenu: React.FC = () => {
                             item={item}
                             scrollIndex={indexStates[index]}
                             checked={checkedStates[index]}
+                            isSelected={index === selected}
                             ref={listRefs}
                           />
                         )}
